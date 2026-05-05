@@ -1,1 +1,124 @@
+const API = "http://127.0.0.1:8000/api";
+let selectedFile = null;
+let barChartInstance = null;
 
+function handleFile(input) {
+  selectedFile = input.files[0];
+  if (selectedFile) {
+    document.getElementById("file-info").textContent =
+      "✅ Selected: " + selectedFile.name + " (" + (selectedFile.size / 1024).toFixed(1) + " KB)";
+    document.getElementById("file-info").classList.remove("hidden");
+    document.getElementById("analyze-btn").disabled = false;
+    document.getElementById("status-badge").textContent = "File Ready";
+  }
+}
+
+async function analyzeFile() {
+  if (!selectedFile) return;
+
+  document.getElementById("loading").classList.remove("hidden");
+  document.getElementById("insights").classList.add("hidden");
+  document.getElementById("dashboard").classList.add("hidden");
+  document.getElementById("status-badge").textContent = "Analyzing...";
+  document.getElementById("analyze-btn").disabled = true;
+
+  try {
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    const res = await fetch(API + "/upload", { method: "POST", body: formData });
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.detail || "Upload failed");
+
+    document.getElementById("loading").classList.add("hidden");
+    document.getElementById("status-badge").textContent = "Done ✓";
+
+    renderInsights(data.insights);
+    renderKPIs(data.summary);
+    renderChart(data.summary);
+    renderTable(data.preview);
+
+    document.getElementById("insights").classList.remove("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+
+  } catch (err) {
+    document.getElementById("loading").classList.add("hidden");
+    document.getElementById("status-badge").textContent = "Error";
+    alert("Error: " + err.message);
+    document.getElementById("analyze-btn").disabled = false;
+  }
+}
+
+function renderInsights(insights) {
+  const grid = document.getElementById("insights-grid");
+  grid.innerHTML = "";
+  insights.forEach(function(insight) {
+    const card = document.createElement("div");
+    card.className = "insight-card";
+    card.textContent = insight;
+    grid.appendChild(card);
+  });
+}
+
+function renderKPIs(summary) {
+  const grid = document.getElementById("kpi-cards");
+  grid.innerHTML = "";
+
+  const kpis = [
+    { label: "Total Rows",  value: summary.total_rows },
+    { label: "Columns",     value: summary.columns ? summary.columns.length : 0 },
+    { label: "Date Range",  value: summary.date_range ? summary.date_range.start.split("T")[0] + " to " + summary.date_range.end.split("T")[0] : "N/A" },
+    { label: "Top Product", value: summary.top_product ? summary.top_product.value : "N/A" },
+  ];
+
+  kpis.forEach(function(k) {
+    grid.innerHTML += "<div class='kpi-card'><div class='kpi-value'>" + k.value + "</div><div class='kpi-label'>" + k.label + "</div></div>";
+  });
+
+  if (summary.stats) {
+    Object.keys(summary.stats).forEach(function(col) {
+      const s = summary.stats[col];
+      grid.innerHTML += "<div class='kpi-card'><div class='kpi-value'>" + s.sum.toLocaleString() + "</div><div class='kpi-label'>Total " + col + "</div></div>";
+      grid.innerHTML += "<div class='kpi-card'><div class='kpi-value'>" + s.mean.toLocaleString() + "</div><div class='kpi-label'>Avg " + col + "</div></div>";
+    });
+  }
+}
+
+function renderChart(summary) {
+  if (!summary.stats) return;
+  const col = Object.keys(summary.stats)[0];
+  const s = summary.stats[col];
+  const ctx = document.getElementById("barChart").getContext("2d");
+  if (barChartInstance) barChartInstance.destroy();
+  barChartInstance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Min", "Average", "Max", "Total"],
+      datasets: [{
+        label: col,
+        data: [s.min, s.mean, s.max, s.sum],
+        backgroundColor: ["#4f46e5","#7c83ff","#a5b4fc","#6366f1"],
+        borderRadius: 6
+      }]
+    },
+    options: {
+      plugins: { legend: { labels: { color: "#9ca3af" } } },
+      scales: {
+        x: { ticks: { color: "#9ca3af" }, grid: { color: "#2a2d3e" } },
+        y: { ticks: { color: "#9ca3af" }, grid: { color: "#2a2d3e" } }
+      }
+    }
+  });
+}
+
+function renderTable(preview) {
+  if (!preview || preview.length === 0) return;
+  const cols = Object.keys(preview[0]);
+  let html = "<table><thead><tr>" + cols.map(function(c){ return "<th>" + c + "</th>"; }).join("") + "</tr></thead><tbody>";
+  preview.forEach(function(row) {
+    html += "<tr>" + cols.map(function(c){ return "<td>" + (row[c] != null ? row[c] : "") + "</td>"; }).join("") + "</tr>";
+  });
+  html += "</tbody></table>";
+  document.getElementById("data-table").innerHTML = html;
+}
