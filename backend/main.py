@@ -1,0 +1,19 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from backend.routes import upload, insights
+
+app = FastAPI(title="PulseIQ API", version="1.0.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(upload.router, prefix="/api", tags=["Upload"])
+app.include_router(insights.router, prefix="/api", tags=["Insights"])
+
+@app.get("/")
+def root():
+    return {"message": "PulseIQ API is running!"}
