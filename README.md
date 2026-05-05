@@ -1,12 +1,12 @@
 # AI-Driven Autonomous Business Intelligence and Predictive Analytics System
 
-📌 Project Overview
+ Project Overview
 
 The **AI-Driven Autonomous Business Intelligence and Predictive Analytics System** is an intelligent platform designed to assist startups and small/social media businesses in making data-driven decisions automatically. Unlike traditional dashboards that only display insights, this system goes a step further by analyzing business data, predicting future trends, and providing actionable strategies to improve growth, sales, and customer engagement.
 
 ---
 
-## 💡 Problem Statement
+ Problem Statement
 
 Small businesses and social media entrepreneurs often struggle with:
 
