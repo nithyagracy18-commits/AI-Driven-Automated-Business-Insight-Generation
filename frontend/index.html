@@ -1,1 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PulseIQ — Business Intelligence</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
 
+  <div class="sidebar">
+    <div class="logo">📊 PulseIQ</div>
+    <nav>
+      <a href="#upload" class="nav-link active">⬆ Upload Data</a>
+      <a href="#insights" class="nav-link">🧠 AI Insights</a>
+      <a href="#dashboard" class="nav-link">📈 Dashboard</a>
+    </nav>
+    <div class="sidebar-footer">AI Business Co-Pilot</div>
+  </div>
+
+  <div class="main">
+
+    <div class="header">
+      <h1>Business Intelligence Dashboard</h1>
+      <span id="status-badge" class="badge">Ready</span>
+    </div>
+
+    <section id="upload" class="card">
+      <h2>⬆ Upload Your Sales Data</h2>
+      <p>Upload a CSV or Excel file to get AI-powered insights instantly.</p>
+
+      <!-- SIMPLE DIRECT FILE INPUT -->
+      <div style="margin: 20px 0;">
+        <input 
+          type="file" 
+          id="file-input" 
+          accept=".csv,.xlsx"
+          style="color: #e0e0e0; font-size: 15px; padding: 10px; background: #2a2d3e; border: 2px dashed #7c83ff; border-radius: 10px; width: 100%; cursor: pointer;"
+          onchange="handleFile(this)"
+        />
+      </div>
+
+      <div id="file-info" class="file-info hidden"></div>
+
+      <button 
+        class="btn btn-primary" 
+        id="analyze-btn" 
+        onclick="analyzeFile()" 
+        disabled>
+        🚀 Analyze with AI
+      </button>
+    </section>
+
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <p>AI is analyzing your data...</p>
+    </div>
+
+    <section id="insights" class="card hidden">
+      <h2>🧠 AI Insights</h2>
+      <div id="insights-grid" class="insights-grid"></div>
+    </section>
+
+    <section id="dashboard" class="card hidden">
+      <h2>📈 Dashboard</h2>
+      <div id="kpi-cards" class="kpi-grid"></div>
+      <div class="charts-grid">
+        <div class="chart-box">
+          <h3>Revenue Stats</h3>
+          <canvas id="barChart"></canvas>
+        </div>
+        <div class="chart-box">
+          <h3>Data Preview</h3>
+          <div id="data-table" class="table-wrap"></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
