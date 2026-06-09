@@ -1,0 +1,92 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {uid}
+    // Fields:
+    //   - uid: string (required) - UID of the user
+    //   - email: string (required, email format) - User's email
+    //   - displayName: string (optional) - User's name
+    //   - role: string (required, enum: ['admin', 'user']) - User's role
+    //   - createdAt: timestamp (required) - Creation time
+    //
+    // Collection: business_records
+    // Document ID: {recordId}
+    // Fields:
+    //   - uid: string (required) - UID of the owner
+    //   - fileName: string (required) - Name of the file
+    //   - fileSize: number (optional) - Size in bytes
+    //   - rowCount: number (optional) - Number of rows
+    //   - dataSummary: map (optional) - Summary data
+    //   - insights: string (optional) - AI insights
+    //   - recommendations: string (optional) - AI recommendations
+    //   - createdAt: timestamp (required) - Creation time
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.uid;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "nithyagracy23@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'role', 'createdAt']) &&
+             data.uid == request.auth.uid &&
+             isValidEmail(data.email) &&
+             data.role in ['admin', 'user'] &&
+             data.createdAt is timestamp;
+    }
+
+    function isValidBusinessRecord(data) {
+      return data.keys().hasAll(['uid', 'fileName', 'createdAt']) &&
+             data.uid == request.auth.uid &&
+             data.fileName is string && data.fileName.size() > 0 && data.fileName.size() < 255 &&
+             data.createdAt is timestamp &&
+             (!('fileSize' in data) || data.fileSize is number) &&
+             (!('rowCount' in data) || data.rowCount is number) &&
+             (!('insights' in data) || (data.insights is string && data.insights.size() < 100000)) &&
+             (!('recommendations' in data) || (data.recommendations is string && data.recommendations.size() < 100000));
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isOwner(uid) && isValidUser(request.resource.data) && (request.resource.data.role == 'user' || isAdmin());
+      allow update: if isOwner(uid) && isValidUser(request.resource.data) && (request.resource.data.role == resource.data.role || isAdmin());
+    }
+
+    match /business_records/{recordId} {
+      allow read: if isDocOwner() || isAdmin();
+      allow create: if isAuthenticated() && isValidBusinessRecord(request.resource.data);
+      allow update: if isDocOwner() && isValidBusinessRecord(request.resource.data) && request.resource.data.uid == resource.data.uid;
+      allow delete: if isDocOwner() || isAdmin();
+    }
+  }
+}

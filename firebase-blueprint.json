@@ -1,0 +1,43 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores user-specific settings and profile information.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Unique identifier for the user." },
+        "email": { "type": "string", "format": "email", "description": "User's email address." },
+        "displayName": { "type": "string", "description": "User's display name." },
+        "role": { "type": "string", "enum": ["admin", "user"], "description": "User's role in the system." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the profile was created." }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "BusinessRecord": {
+      "title": "Business Record",
+      "description": "Stores uploaded business data and AI-generated insights.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "UID of the user who owns this record." },
+        "fileName": { "type": "string", "description": "Name of the uploaded file." },
+        "fileSize": { "type": "number", "description": "Size of the file in bytes." },
+        "rowCount": { "type": "number", "description": "Number of rows in the data." },
+        "dataSummary": { "type": "object", "description": "Summary of the data (revenue, categories, etc.)." },
+        "insights": { "type": "string", "description": "AI-generated insights for this data." },
+        "recommendations": { "type": "string", "description": "AI-generated recommendations (seasons, trends)." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the record was saved." }
+      },
+      "required": ["uid", "fileName", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "UserProfile",
+      "description": "User profile documents."
+    },
+    "/business_records/{recordId}": {
+      "schema": "BusinessRecord",
+      "description": "Collection of business records and insights."
+    }
+  }
+}
