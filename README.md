@@ -1,6 +1,3 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="[https://ai.google.dev/static/site-assets/images/share-ais-513315318.png](https://images.klipfolio.com/website/public/36ab37e3-6007-4918-9c3d-778105fe65d0/executive%20dashboard%20example.png)" />
-</div>
 
 # PulseIQ: AI-Driven Automated Business Insight Generation
 
