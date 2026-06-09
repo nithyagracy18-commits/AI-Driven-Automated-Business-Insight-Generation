@@ -1,20 +1,114 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+<img width="1200" height="475" alt="GHBanner" src="[https://ai.google.dev/static/site-assets/images/share-ais-513315318.png](https://images.klipfolio.com/website/public/36ab37e3-6007-4918-9c3d-778105fe65d0/executive%20dashboard%20example.png)" />
 </div>
 
-# Run and deploy your AI Studio app
+# PulseIQ: AI-Driven Automated Business Insight Generation
 
-This contains everything you need to run your app locally.
+## Overview
 
-View your app in AI Studio: https://ai.studio/apps/a55c3cc5-4ae5-4784-8204-9d265a7aa6f1
+PulseIQ is an AI-powered business analytics platform designed to help organizations transform raw business data into meaningful insights. The system analyzes uploaded datasets, generates intelligent recommendations, visualizes trends through interactive dashboards, and supports data-driven decision-making.
 
-## Run Locally
+By leveraging Artificial Intelligence and data analytics, PulseIQ enables users to identify patterns, understand business performance, and make informed strategic decisions without requiring advanced technical expertise.
 
-**Prerequisites:**  Node.js
+---
 
+## Features
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- Secure user authentication using Firebase
+- CSV dataset upload and processing
+- AI-generated business insights and recommendations
+- Interactive dashboards and visual analytics
+- Automated report generation
+- Data trend analysis and performance monitoring
+- User-friendly and responsive interface
+
+---
+
+## Technology Stack
+
+### Frontend
+- React.js
+- TypeScript
+- Vite
+- Recharts
+
+### Backend
+- Python
+- AI-based analytics engine
+
+### Database & Authentication
+- Firebase Authentication
+- Firebase Firestore
+
+### Development Tools
+- Visual Studio Code
+- Git & GitHub
+
+---
+
+## Project Architecture
+
+```text
+PulseIQ
+│
+├── src/
+│   ├── Components
+│   ├── Dashboard
+│   ├── Charts
+│   └── Analytics Modules
+│
+├── Backend/
+│   ├── ai_engine.py
+│   ├── analyzer.py
+│   ├── insights.py
+│   └── upload.py
+│
+├── Firebase Configuration
+├── README.md
+└── package.json
+```
+
+---
+
+## Working Process
+
+1. User logs into the system.
+2. User uploads a business dataset.
+3. The system processes the data using AI algorithms.
+4. Business metrics and trends are analyzed.
+5. AI generates insights and recommendations.
+6. Results are displayed through interactive dashboards and charts.
+
+---
+
+## Applications
+
+- Business Performance Analysis
+- Sales Trend Monitoring
+- Customer Behavior Analysis
+- Decision Support Systems
+- Data-Driven Strategic Planning
+
+---
+
+## Future Enhancements
+
+- Real-time business monitoring
+- Advanced predictive analytics
+- Multi-user collaboration
+- Exportable business reports
+- Enhanced AI recommendation engine
+
+---
+
+## Project Outcome
+
+PulseIQ simplifies business analytics by converting complex datasets into actionable insights. The platform helps organizations improve decision-making, identify growth opportunities, and optimize business performance through AI-driven analysis.
+
+---
+
+## Author
+
+**Nithya Gracy**
+
+AI-Driven Automated Business Insight Generation Project
